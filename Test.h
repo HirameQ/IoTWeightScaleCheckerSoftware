@@ -34,8 +34,8 @@ typedef struct {
     uint8_t testTempCheck;
     String testTempStatus;
 
-    uint8_t testUUIDWrite;
-    String testUUIDStatus;
+    uint8_t testUUIDWriteCheck;
+    String testUUIDWriteStatus;
 
     uint8_t testButtonSwCheck;
     String testButtonSwStatus;
@@ -46,8 +46,8 @@ typedef struct {
     uint8_t testButtonResetCheck;
     String testButtonResetStatus;
 
-    uint8_t testUUIDCheck;
-    String testUUIDCheckStatus;
+    uint8_t testUUIDReadCheck;
+    String testUUIDReadStatus;
 
     uint8_t testFirmwareUpdateCheck;
     String testFirmwareUpdateStatus;
@@ -56,7 +56,6 @@ typedef struct {
     String testBLEStatus;
 
     uint8_t testAllCheck;
-
 } test_t;
 
 #define ADC_SCAN_MAX 3
@@ -68,4 +67,6 @@ typedef struct {
 
 void resetTest(test_t *result);
 void resetAdcResult(adc_result_t *result);
+String ngAllResult(test_t* result);
+void checkAllResult(test_t* result);
 #endif //IOTWEIGHTSCALECHECKERSOFTWARE_TESTSTRUCT_H

@@ -1,0 +1,1 @@
+CMakeLists.txt が C:\Users\wami\Documents\HirameQ\IoTWeightScaleProject\IoTWeightScaleCheckerSoftware に見つかりません CMakeLists.txt の選択

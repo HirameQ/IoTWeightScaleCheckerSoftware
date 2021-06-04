@@ -14,6 +14,7 @@
 class BeaconScanner {
 public:
     bool scan(String uuid,test_t* test);
+    bool scanQR(String uuid,uint16_t* _deviceType,uint16_t* _deviceNumber);
 };
 
 

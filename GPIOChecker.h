@@ -23,6 +23,7 @@ public:
     float readBoardCurrent(void);
     float readBoardVoltage(void);
 
+    void writeWOff();
     void writeW1On();
     void writeW2On();
     void writeW3On();

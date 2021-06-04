@@ -9,6 +9,7 @@
 class SwitchCheck {
 public:
     void zeroSwPush();
+    void resetSw();
     void resetSwPush();
 };
 

@@ -63,12 +63,12 @@ void Display::showTest(test_t result){
         showStatus("ADC Check",result.testADCCheck);
         showStatus("LED Check",result.testLEDCheck);
         showStatus("Temp Check",result.testTempCheck);
-        showStatus("UUID Write",result.testUUIDWrite);
+        showStatus("UUID Write",result.testUUIDWriteCheck);
         showStatus("Button Check(SW)",result.testButtonSwCheck);
 
         showStatus("SleepCurrentCheck",result.testSleepCurrentCheck);
         showStatus("Button Check(Reset)",result.testButtonResetCheck);
-        showStatus("UUID Check",result.testUUIDCheck);
+        showStatus("UUID Check",result.testUUIDReadCheck);
         showStatus("Firmware Update",result.testFirmwareUpdateCheck);
         showStatus("BLE Check",result.testBLECheck);
 
@@ -86,12 +86,12 @@ void Display::showTest(test_t result){
     }
 }
 
-void Display::showADCTest(adc_result_t result[],int level,int scan){
+void Display::showADCTest(adc_result_t result[],int level,int scan,int base){
     M5.Lcd.setTextSize(2);
     M5.Lcd.fillScreen(BLACK);
     M5.Lcd.setTextColor(WHITE);
-    M5.Lcd.setCursor(110, 5);
-    M5.Lcd.printf("ADC Check");
+    M5.Lcd.setCursor(20, 5);
+    M5.Lcd.printf("ADC Check BaseLevel: %d",base);
     M5.Lcd.drawFastHLine(10, 25, 300, WHITE);
     M5.Lcd.setCursor(0, 30);
     for (int i = 0; i < level; ++i) {
@@ -103,7 +103,6 @@ void Display::showADCTest(adc_result_t result[],int level,int scan){
     }
 }
 
-
 void Display::showDarkEnvironment(uint16_t sensor){
     M5.Lcd.fillScreen(WHITE);
 
@@ -113,10 +112,78 @@ void Display::showDarkEnvironment(uint16_t sensor){
     M5.Lcd.printf("Create a dark environment\nScanValue:%d\nScanValue < 100\nPress the center button\nwhen you're ready\n\n\n           Push!",sensor);
 }
 
+void Display::showProgramWriteError(String programName){
+    M5.Lcd.fillScreen(WHITE);
+
+    M5.Lcd.setCursor(0, 60);
+    M5.Lcd.setTextColor(BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.printf("Program Write Error\nNot connected to PC\n    ------------\n    %s\n    ------------\nPress the center button\nwhen you're ready\n\n\n           Push!",programName.c_str());
+}
+
+void Display::showQRReadWait(){
+    M5.Lcd.fillScreen(WHITE);
+
+    M5.Lcd.setCursor(0, 20);
+    M5.Lcd.setTextColor(BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.printf("   QR Code Reader\n   Reading Wait...");
+    M5.Lcd.drawJpgFile(SPIFFS, "/qr.jpg", 60, 70);
+}
+
+void Display::showQRReadDecision(String hirameQId){
+    M5.Lcd.fillScreen(WHITE);
+
+    M5.Lcd.setCursor(40, 60);
+    M5.Lcd.setTextColor(BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.printf("QR Code Read Result\n");
+    M5.Lcd.setTextSize(3);
+    M5.Lcd.setCursor(20, 120);
+    M5.Lcd.printf("ID:%s",hirameQId.c_str());
+    M5.Lcd.setCursor(40, 200);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.printf("Retry   OK");
+}
+
+void Display::showTestResult(test_t result,String errorMessage,String hirameQId){
+    if(result.testAllCheck == TEST_WAIT) {
+        M5.Lcd.fillScreen(BLACK);
+    } else if (result.testAllCheck == TEST_OK){
+        M5.Lcd.fillScreen(TFT_BLUE);
+    } else {
+        M5.Lcd.fillScreen(TFT_RED);
+    }
+
+    M5.Lcd.setCursor(40, 10);
+    M5.Lcd.setTextColor(WHITE);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.printf("Test Finish!\n");
+    M5.Lcd.setTextSize(3);
+    M5.Lcd.setCursor(20, 50);
+    M5.Lcd.printf("ID:%s",hirameQId.c_str());
+    M5.Lcd.setCursor(0, 100);
+    if(errorMessage != "") {
+        M5.Lcd.setTextSize(2);
+        M5.Lcd.printf("Error:%s", errorMessage.c_str());
+    }else{
+        M5.Lcd.setTextSize(4);
+        M5.Lcd.setCursor(40, 120);
+        M5.Lcd.printf("Success!!");
+    }
+    M5.Lcd.setCursor(40, 200);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.printf("Open Checker");
+}
+
 bool Display::readCenterButton() {
     return M5.BtnB.read();
+}
+bool Display::readLeftButton() {
+    return M5.BtnA.read();
 }
 
 void Display::begin() {
     M5.begin();
 }
+

@@ -51,6 +51,12 @@ float GPIOChecker::readBoardVoltage() {
     return ina226Prc.readVoltage();
 }
 
+void GPIOChecker::writeWOff() {
+    pca9539.digitalWrite(W1, LOW);
+    pca9539.digitalWrite(W2, LOW);
+    pca9539.digitalWrite(W3, LOW);
+}
+
 void GPIOChecker::writeW1On() {
     pca9539.digitalWrite(W1, HIGH);
     pca9539.digitalWrite(W2, LOW);

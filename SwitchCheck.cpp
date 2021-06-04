@@ -17,6 +17,14 @@ void SwitchCheck::resetSwPush() {
     resetServo.detach();
 }
 
+void SwitchCheck::resetSw() {
+    resetServo.attach(25);
+    resetServo.write(0);
+    delay(150);
+    resetServo.detach();
+}
+
+
 void SwitchCheck::zeroSwPush() {
     zeroServo.attach(26);
     zeroServo.write(70);
