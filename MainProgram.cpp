@@ -80,6 +80,7 @@ bool bleScanQRDeviceId(){
     uint16_t deviceNumber = 65535;
     display.showQRReadWait();
     while (deviceNumber == 65535){
+        delay(1);
         scanner.scanQR("7D9A25E4-1BC2-0BDF-02CB-C7E26C48BE5C",&deviceType,&deviceNumber);
         Serial.printf("QR DeviceType: %d, DeviceNumber: %d\n",deviceType,deviceNumber);
     }
@@ -115,9 +116,10 @@ bool pcTestProgramWrite(){
     Serial2.end();
     pinMode(17,INPUT);
     pinMode(16,INPUT);
+    display.showProgramWrite("TestProgram");
     Serial.println("TEST:PROGRAM:TEST_PROGRAM");
     delay(1000);
-    if(testCommand("PROGRAM","FINISH_TEST_PROGRAM",200, false,Serial)){
+    if(testCommand("PROGRAM","FINISH_TEST_PROGRAM",150, false,Serial)){
         Serial2.begin(115200);
         Serial.println("pcTestProgramWrite true");
         return true;
@@ -446,6 +448,7 @@ uint8_t testResetCheck(test_t *result){
     switchCheck.resetSwPush();
     unsigned long targetTime = millis() + 6000;
     while (targetTime > millis()) {
+        delay(1);
         if (testCommand("SYSTEM", "START")) {
             result->testButtonResetStatus = "Reset:OK";
             Serial.println(result->testButtonResetStatus);
@@ -485,6 +488,8 @@ bool pcReleaseProgramWrite(){
     Serial2.end();
     pinMode(17,INPUT);
     pinMode(16,INPUT);
+
+    display.showProgramWrite("ReleaseProgram");
     Serial.println("TEST:PROGRAM:RELEASE_PROGRAM");
     delay(1000);
     if(testCommand("PROGRAM","FINISH_RELEASE_PROGRAM",200, false,Serial)){
@@ -501,9 +506,8 @@ uint8_t testReleaseProgramWriteCheck(test_t *result){
     delay(1000);
     unsigned long targetTime = millis() + 3000;
     while (targetTime > millis()) {
+        delay(1);
         if (commandRead(Serial2,1)) {
-            Serial.println(command);
-            Serial.println(strncmp(command, "*********** ZAICON start!",25));
             if (strncmp(command, "*********** ZAICON start!",25) == 0) {
                 result->testFirmwareUpdateStatus = command;
                 Serial.println(result->testFirmwareUpdateStatus);
@@ -557,6 +561,22 @@ void loop() {
         delay(1000);
         display.showTest(test);
 
+        bool scanQr = true;
+        while (scanQr) {
+            bleScanQRDeviceId();
+            display.showQRReadDecision(getHirameQDeviceId());
+            while (true) {
+                if (display.readCenterButton()) {
+                    scanQr = false;
+                    break;
+                }
+                if (display.readLeftButton()) {
+                    break;
+                }
+                delay(1);
+            }
+        }
+
         if(!pcTestProgramWrite()){
             display.showProgramWriteError("Test Program");
             while (true){
@@ -578,20 +598,6 @@ void loop() {
         }
         display.showTest(test);
 
-        bool scanQr = true;
-        while (scanQr) {
-            bleScanQRDeviceId();
-            display.showQRReadDecision(getHirameQDeviceId());
-            while (true) {
-                if (display.readCenterButton()) {
-                    scanQr = false;
-                    break;
-                }
-                if (display.readLeftButton()) {
-                    break;
-                }
-            }
-        }
 
         display.showTest(test);
 
@@ -677,6 +683,7 @@ void loop() {
 bool testCommand(char* testMode,char* testStatus,uint8_t timeout100mSec,bool debug,HardwareSerial hardwareSerial) {
     unsigned long targetTime = millis() + 100*timeout100mSec;
     while (targetTime > millis()) {
+        delay(1);
         if (commandRead(hardwareSerial, 1)) {
             if (debug) {
                 Serial.printf("command : %s\n",command);
@@ -685,7 +692,6 @@ bool testCommand(char* testMode,char* testStatus,uint8_t timeout100mSec,bool deb
                 if (debug) {
                     Serial.printf("mode : %s\n",mode);
                     Serial.printf("status : %s\n",status);
-                    Serial.printf("testStatusLen : %d ,statusLen : %d , strncmp : %d\n",strlen(testStatus),strlen(status),strncmp(status, testStatus, strlen(testStatus)));
                 }
                 if (strcmp(mode, testMode) == 0) {
                     if (testStatus == NULL ) return true;
@@ -709,6 +715,7 @@ bool commandRead(HardwareSerial hardwareSerial,int timeout100mSec){
     //CR LF
     unsigned long targetTime = millis() + 100 * timeout100mSec;
     while (targetTime > millis()) {
+        delay(1);
         while (hardwareSerial.available()) {
             command[commandIndex] = hardwareSerial.read();
             if(command[commandIndex] == 10 ){//LF

@@ -112,6 +112,16 @@ void Display::showDarkEnvironment(uint16_t sensor){
     M5.Lcd.printf("Create a dark environment\nScanValue:%d\nScanValue < 100\nPress the center button\nwhen you're ready\n\n\n           Push!",sensor);
 }
 
+void Display::showProgramWrite(String programName){
+    M5.Lcd.fillScreen(WHITE);
+
+    M5.Lcd.setCursor(10, 40);
+    M5.Lcd.setTextColor(BLACK);
+    M5.Lcd.setTextSize(3);
+    M5.Lcd.printf("Program Writing..\n\n  ------------\n  %s\n  ------------\n\n  10s wait...",programName.c_str());
+}
+
+
 void Display::showProgramWriteError(String programName){
     M5.Lcd.fillScreen(WHITE);
 

@@ -16,6 +16,7 @@ public:
     bool readLeftButton();
     void showADCTest(adc_result_t result[],int level,int scan,int base);
     void showProgramWriteError(String programName);
+    void showProgramWrite(String programName);
     void showQRReadWait();
     void showQRReadDecision(String hirameQId);
     void showTestResult(test_t result,String errorMessage,String hirameQId);

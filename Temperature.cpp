@@ -20,7 +20,7 @@ void Temperature::begin() {
     }
 
     Serial.println("Sensor connect failed");
-    while(1) { }
+    while(1) { delay(1);}
 }
 
 float Temperature::read() {
