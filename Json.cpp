@@ -23,7 +23,7 @@ void Json::addTestJson(JsonArray array,String title,String criteria,String statu
 void Json::createJson(test_t test) {
     doc.clear();
     doc["title"] = "重量計出荷テスト";
-    doc["version"] = "ver20210604_a1141fe";
+    doc["version"] = "ver20210604_9ab8d0d";
     doc["user"] = "ピノベーション";
     doc["testDevice"] = "hq_tp_00078";
     JsonArray data = doc.createNestedArray("testData");
