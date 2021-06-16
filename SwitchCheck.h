@@ -9,7 +9,8 @@
 class SwitchCheck {
 public:
     void zeroSwPush();
-    void resetSw();
+    void testFinishSound();
+    void testErrorSound();
     void resetSwPush();
 };
 

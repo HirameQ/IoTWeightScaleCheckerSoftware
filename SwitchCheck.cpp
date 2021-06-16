@@ -17,10 +17,17 @@ void SwitchCheck::resetSwPush() {
     resetServo.detach();
 }
 
-void SwitchCheck::resetSw() {
+void SwitchCheck::testFinishSound() {
     resetServo.attach(25);
     resetServo.write(0);
     delay(150);
+    resetServo.detach();
+}
+
+void SwitchCheck::testErrorSound() {
+    resetServo.attach(25);
+    resetServo.write(10);
+    delay(50);
     resetServo.detach();
 }
 

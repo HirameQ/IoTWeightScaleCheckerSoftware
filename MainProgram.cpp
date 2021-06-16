@@ -313,6 +313,7 @@ uint8_t testLedCheck(test_t *result){
         }
         if(offLevel < 100)break;
         while (true){
+            switchCheck.testErrorSound();
             display.showDarkEnvironment(gpioChecker.readLedLevel());
             if(display.readCenterButton())break;
             delay(100);
@@ -489,6 +490,10 @@ bool pcReleaseProgramWrite(){
     pinMode(17,INPUT);
     pinMode(16,INPUT);
 
+    if(testCommand("PROGRAM","FINISH_RELEASE_PROGRAM",1, false,Serial)){
+        Serial2.begin(115200);
+        return true;
+    }
     display.showProgramWrite("ReleaseProgram");
     Serial.println("TEST:PROGRAM:RELEASE_PROGRAM");
     delay(1000);
@@ -578,6 +583,7 @@ void loop() {
         }
 
         if(!pcTestProgramWrite()){
+            switchCheck.testErrorSound();
             display.showProgramWriteError("Test Program");
             while (true){
                 if(display.readCenterButton())break;
@@ -648,6 +654,7 @@ void loop() {
         if(!pcReleaseProgramWrite()){
             display.showProgramWriteError("Release Program");
             while (true){
+                switchCheck.testErrorSound();
                 if(display.readCenterButton())break;
                 delay(100);
             }
@@ -666,7 +673,7 @@ void loop() {
 
         display.showTestResult(test,ngAllResult(&test),getHirameQDeviceId());
         while (true){
-            switchCheck.resetSw();
+            switchCheck.testFinishSound();
             if(gpioChecker.readVoltage() < 3000)break;
             delay(100);
         }
