@@ -551,7 +551,7 @@ void pcTestResult(test_t test){
     json.createJson(test);
     Serial.println();
 }
-
+uint8_t servoCounter = 0;
 void loop() {
     if(test.testShortCheck == TEST_OK) {
         resetTest(&test);
@@ -560,9 +560,15 @@ void loop() {
     gpioChecker.writeUsbPowerOn();
 
     delay(10);
+    if(servoCounter >= 200){
+        servoCounter = 0;
+        switchCheck.resetSwPush();
+    }
+    servoCounter++;
 
     testShortCheck(&test);
     if(test.testShortCheck == TEST_OK) {
+        servoCounter = 0;
         delay(1000);
         display.showTest(test);
 
