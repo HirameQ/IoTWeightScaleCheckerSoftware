@@ -238,7 +238,7 @@ uint8_t testADCCheck(test_t *result){
     }
     display.showADCTest(adcResult ,ADC_LEVEL,ADC_SCAN_MAX,baseLevel);
     gpioChecker.writeWOff();//0mV
-    delay(1000);
+    delay(500);
     for (int i = 0; i < ADC_SCAN_MAX; ++i) {
         Serial2.println("TEST:ADC:READ");
         if(testCommand("ADC",NULL,15)) {
@@ -246,7 +246,7 @@ uint8_t testADCCheck(test_t *result){
         }
     }
     baseLevel = abs( baseLevel / ADC_SCAN_MAX );
-    Serial.printf("Base ADC : %d",baseLevel);
+    Serial.printf("Base ADC : %d\n",baseLevel);
     display.showADCTest(adcResult ,ADC_LEVEL,ADC_SCAN_MAX,baseLevel);
     for (int y = 0; y < ADC_LEVEL; ++y) {
         if(y==0){
@@ -271,13 +271,14 @@ uint8_t testADCCheck(test_t *result){
                     result->testADCStatus = "";
                 }
                 result->testADCStatus += (String)"scan:"+ scanAdc +",base: "+diffLevel;
-
+                Serial.print((String)"scan:"+ scanAdc +",base: "+diffLevel);
                 if(!(diffLevel- diffLevel * 0.2 < scanAdc && scanAdc < diffLevel + diffLevel * 0.2 )){
                     adcResult[y].adcScanCheck[i] = TEST_NG;
                     error = true;
-                    Serial.println("testADCCheck NG");
+                    Serial.println(", NG");
                 }else{
                     adcResult[y].adcScanCheck[i] = TEST_OK;
+                    Serial.println(", OK");
                 }
                 display.showADCTest(adcResult ,ADC_LEVEL,ADC_SCAN_MAX,baseLevel);
             }else{
@@ -287,7 +288,6 @@ uint8_t testADCCheck(test_t *result){
             delay(500);
         }
     }
-    Serial.println(result->testADCStatus);
 
     if(!error){
         Serial.println("testADCCheck PASS");
@@ -311,7 +311,7 @@ uint8_t testLedCheck(test_t *result){
         }else{
             offLevel = gpioChecker.readLedLevel();
         }
-        if(offLevel < 100)break;
+        if(offLevel < 200)break;
         while (true){
             switchCheck.testErrorSound();
             display.showDarkEnvironment(gpioChecker.readLedLevel());
@@ -332,7 +332,7 @@ uint8_t testLedCheck(test_t *result){
     }
     result->testLedStatus = (String)"led off:"+offLevel+",led on: "+onLevel;
     Serial.println(result->testLedStatus);
-    if(offLevel < 100 && onLevel > 2500){
+    if(offLevel < 200 && onLevel > 2500){
         Serial.println("testLedCheck PASS");
         result->testLEDCheck = TEST_OK;
         return TEST_OK;
@@ -530,12 +530,16 @@ uint8_t testReleaseProgramWriteCheck(test_t *result){
 //uuid match
 uint8_t testBleCheck(test_t *result){
     serialClear();
-    delay(5000);
-    if( scanner.scan(getUUID(),result)) {
-        Serial.println(result->testBLEStatus);
-        Serial.println("testBleCheck PASS");
-        result->testBLECheck = TEST_OK;
-        return TEST_OK;
+    for(int i = 0;i<15;i++){
+        while (Serial2.available()) {
+            Serial.write(Serial2.read());
+        }
+        if(scanner.scan(getUUID(),result)) {
+            Serial.println(result->testBLEStatus);
+            Serial.println("testBleCheck PASS");
+            result->testBLECheck = TEST_OK;
+            return TEST_OK;
+        }
     }
     Serial.println("testBleCheck NG");
     result->testBLECheck = TEST_NG;
@@ -564,12 +568,16 @@ void loop() {
         servoCounter = 0;
         switchCheck.resetSwPush();
     }
+    if (display.readLeftButton()) {
+        switchCheck.resetSwPush();
+        servoCounter = 0;
+    }
     servoCounter++;
 
     testShortCheck(&test);
     if(test.testShortCheck == TEST_OK) {
         servoCounter = 0;
-        delay(1000);
+        delay(100);
         display.showTest(test);
 
         bool scanQr = true;

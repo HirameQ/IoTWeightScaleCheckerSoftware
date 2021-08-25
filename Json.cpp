@@ -23,7 +23,7 @@ void Json::addTestJson(JsonArray array,String title,String criteria,String statu
 void Json::createJson(test_t test) {
     doc.clear();
     doc["title"] = "重量計出荷テスト";
-    doc["version"] = "ver20210604_9ab8d0d";
+    doc["version"] = "ver20210824_9ab8d0d";
     doc["user"] = "ピノベーション";
     doc["testDevice"] = "hq_tp_00078";
     JsonArray data = doc.createNestedArray("testData");
@@ -33,7 +33,7 @@ void Json::createJson(test_t test) {
     addTestJson(data,"電池起動テスト","voltage > 4000 , boardVoltage < 4000",test.testPowerBatteryStatus,test.testPowerBatteryCheck);
     addTestJson(data,"電圧読み取りテスト","boardVoltage-200 < scanVoltage < boardVoltage+200",test.testVoltageStatus,test.testVoltageCheck);
     addTestJson(data,"ADC読み取りテスト","baseLevel-baseLevel *0.2 < scanADC < baseLevel+baseLevel *0.2",test.testADCStatus,test.testADCCheck);
-    addTestJson(data,"LEDテスト","LED OFF < 100 ,LED ON > 3000",test.testLedStatus,test.testLEDCheck);
+    addTestJson(data,"LEDテスト","LED OFF < 200 ,LED ON > 3000",test.testLedStatus,test.testLEDCheck);
     addTestJson(data,"温度取得テスト","boardTemp-2 < scanVoltage < boardTemp+2",test.testTempStatus,test.testTempCheck);
     addTestJson(data,"UUID書き込み","response ok",test.testUUIDWriteStatus,test.testUUIDWriteCheck);
     addTestJson(data,"スイッチテスト","response ok",test.testButtonSwStatus,test.testButtonSwCheck);

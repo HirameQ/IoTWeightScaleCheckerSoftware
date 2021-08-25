@@ -74,7 +74,7 @@ bool BeaconScanner::scan(String uuid,test_t* test) {
     BLEScan* pBLEScan = BLEDevice::getScan();
     pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks(),false);   // 重複を許さない場合は、falseに変更のこと。
     pBLEScan->setActiveScan(true);
-    BLEScanResults foundDevices = pBLEScan->start(7);
+    BLEScanResults foundDevices = pBLEScan->start(1);
     test->testBLEStatus = message;
     Serial.println("Scan done!");
     return scanBleFindFlg;
